@@ -2,5 +2,103 @@
 name = "levy-curve"
 version = "0.1.0"
 edition = "2024"
+authors = ["Aj Stanléy <stan@math.ai>"]
+description = "A library for generating and rendering Lévy C curves (fractal dragon curves)"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/aj-stanley/levy-curve"
+readme = "README.md"
+keywords = ["fractal", "curve", "geometry", "mathematics", "graphics"]
+categories = ["mathematics", "graphics", "visualization"]
+
+[lib]
+name = "levy_curve"
+path = "src/lib.rs"
+
+[[bin]]
+name = "levy-curve"
+path = "src/main.rs"
 
 [dependencies]
+# No external dependencies for the core library
+
+[dev-dependencies]
+# Dependencies only used for testing and development
+criterion = "0.7.0" # For benchmarking performance
+proptest = "1.7.0"  # Property-based testing for robust validation
+
+[features]
+default = ["std"]
+
+# Standard library support (default)
+std = []
+
+# Enable serde support for serialization
+serde = ["dep:serde"]
+
+# Enable rayon for parallel processing of large curves
+parallel = ["dep:rayon"]
+
+# Optional dependencies (only included when features are enabled)
+[dependencies.serde]
+version = "1.0"
+features = ["derive"]
+optional = true
+
+[dependencies.rayon]
+version = "1.7"
+optional = true
+
+# Profile optimizations
+[profile.release]
+# Maximum optimization for release builds
+opt-level = 3
+lto = true           # Link-time optimization
+codegen-units = 1    # Better optimization, slower compile
+panic = "abort"      # Smaller binary size
+strip = true         # Remove debug symbols
+
+[profile.dev]
+# Faster compilation for development
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.bench]
+# Optimized for benchmarking
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+
+# Documentation settings
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+# Example programs that demonstrate usage
+[[example]]
+name = "basic_curve"
+path = "examples/basic_curve.rs"
+
+[[example]]
+name = "svg_export"
+path = "examples/svg_export.rs"
+
+[[example]]
+name = "custom_config"
+path = "examples/custom_config.rs"
+
+[[example]]
+name = "performance_test"
+path = "examples/performance_test.rs"
+
+# Benchmark definitions
+[[bench]]
+name = "curve_generation"
+harness = false
+
+[[bench]]
+name = "rendering"
+harness = false
